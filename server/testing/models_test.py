@@ -6,15 +6,17 @@ from models import db, Message
 class TestMessage:
     '''Message model in models.py'''
 
-    with app.app_context():
-        m = Message.query.filter(
-            Message.body == "Hello 👋"
-            ).filter(Message.username == "Liza")
-
-        for message in m:
-            db.session.delete(message)
-
-        db.session.commit()
+    def setup_method(self):
+        with app.app_context():
+            try:
+                m = Message.query.filter(
+                    Message.body == "Hello 👋"
+                    ).filter(Message.username == "Liza")
+                for message in m:
+                    db.session.delete(message)
+                db.session.commit()
+            except AttributeError:
+                pass
 
     def test_has_correct_columns(self):
         '''has columns for message body, username, and creation time.'''
